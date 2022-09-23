@@ -1,0 +1,9 @@
+html
+    head 
+        title "Lets understand PUG"
+    body 
+        h1(title='this is pug') "THis is something crazy html"
+        ul
+            each val in pds
+                li
+                    a(href="productDetails/"+val.id)= val.title
