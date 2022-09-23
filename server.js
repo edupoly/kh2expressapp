@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
-// var products = require('./products')
+var products = require('./products')
 app.set('view engine', 'pug');
 app.set('views','./views');
 var fs = require('fs')
@@ -10,6 +10,48 @@ var url = 'mongodb://localhost:27017'
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+app.get("/addQuiz",function(req,res){
+    res.sendFile(__dirname+"/addQuiz.html")
+})
+app.post("/addQuiz",function(req,res){
+    console.log(req.body)
+    MongoClient.connect(url,function(err,con){
+        if(err)console.log(err)
+        else{
+            var db = con.db('khut');
+            db.collection('quizes').insertOne(req.body)
+            .then((data)=>{res.send("Quiz inserted success")})
+            .catch(err=>console.log(err))
+        }
+    })
+})
+app.get("/listQuizes",function(req,res){
+    MongoClient.connect(url,function(err,con){
+        var db = con.db('khut')
+        db.collection('quizes').find().toArray().then((data)=>{
+            res.render('quizList',{quizes:data})
+        })
+    })
+})
+app.get("/quiz/:qtitle",function(req,res){
+    MongoClient.connect(url,function(err,con){
+        if(err){console.log('err',err)}
+        else{
+            var db = con.db('khut');
+            db.collection('quizes').find({title:req.params.qtitle}).toArray().then((data)=>{
+                if(err){console.log('err',err)}
+                else{
+                    res.render('quiz',{quiz:data[0]})
+                }
+            })
+        }
+    })
+})
+app.post("/evaluateQuiz/:qtitle",function(req,res){
+    console.log(req.params)
+    console.log(req.body)
+    res.send("please wait....")
+})
 app.get("/employees",function(req,res){
     MongoClient.connect(url,function(err,con){
         if(err){console.log('err',err)}
@@ -24,15 +66,12 @@ app.get("/employees",function(req,res){
         }
     })
 })
-
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/mypage.html")
 })
-
 app.get("/products",function(req,res){
     res.render('productsHome',{pds:products})
 })
-
 app.get("/addProduct",function(req,res){
     res.sendFile(__dirname+"/addProduct.html")
 })

@@ -1,0 +1,9 @@
+html
+    head 
+        title "Lets understand PUG"
+    body 
+        h1(title='this is pug') "list of quizes"
+        ul
+            each val in quizes
+                li
+                    a(href=`/quiz/${val.title}`)= val.title

@@ -1,0 +1,27 @@
+html
+    head 
+        title "Lets understand PUG"
+    body 
+        h1(title='Title of the Quiz')= quiz.title 
+        form(action=`/evaluateQuiz/${quiz.title}` method='post') 
+            p= quiz.q1
+            input(type='radio' name='q1' value='q1op1')
+            label= quiz.q1op1
+            input(type='radio' name='q1' value='q1op2')
+            label= quiz.q1op2
+            input(type='radio' name='q1' value='q1op3')
+            label= quiz.q1op3
+            input(type='radio' name='q1' value='q1op4')
+            label= quiz.q1op4 
+
+            p= quiz.q2
+            input(type='radio' name='q2' value='q2op1')
+            label= quiz.q2op1
+            input(type='radio' name='q2' value='q2op2')
+            label= quiz.q2op2
+            input(type='radio' name='q2' value='q2op3')
+            label= quiz.q2op3
+            input(type='radio' name='q2' value='q2op4')
+            label= quiz.q2op4 
+
+            button submit
