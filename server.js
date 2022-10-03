@@ -2,13 +2,57 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
 var products = require('./products')
+var users = require('./users')
 app.set('view engine', 'pug');
 app.set('views','./views');
 var fs = require('fs')
+var cookieParser = require('cookie-parser')
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017'
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cookieParser())
+
+app.post("/login",function(req,res){
+    var c = users.find((user)=>{
+        if(user.username==req.body.username && user.password==req.body.password){
+            res.cookie('username',req.body.username)
+            res.cookie('password',req.body.password)
+            return true
+        }
+        else{
+            return false
+        }
+    })
+    if(c){
+        res.sendFile(__dirname+"/mypage.html")
+    }
+    else{
+        res.send("Not a valid user")
+    }
+})
+
+app.use(function(req,res,next){
+    console.log('middleware function called')
+    if(req.cookies.username){
+        var c = users.find((user)=>{
+            if(user.username==req.cookies.username && user.password==req.cookies.password){
+                return true
+            }
+            else{
+                return false
+            }
+        })
+        if(c){
+            next()
+        }
+        else{
+            res.sendFile(__dirname+"/login.html")
+        }
+    }
+    
+})
+
 
 app.get("/addQuiz",function(req,res){
     res.sendFile(__dirname+"/addQuiz.html")
@@ -92,4 +136,4 @@ app.get("/productDetails/:id",function(req,res){
     res.render('productDetails',{product:selectedProduct})
 })
 
-app.listen(5500)
+app.listen(5500,function(){console.log('server running on 5500')})

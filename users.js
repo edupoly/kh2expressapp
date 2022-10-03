@@ -1,0 +1,12 @@
+module.exports=[
+  {
+    username:'praveen',
+    password:'123',
+    level:4
+  },
+  {
+    username:'nitu',
+    password:'222',
+    level:2
+  }
+]
