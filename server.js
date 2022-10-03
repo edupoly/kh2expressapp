@@ -20,8 +20,8 @@ app.use(session({secret: "its my i like sachin batting"}));
 app.post("/login",function(req,res){
     var c = users.find((user)=>{
         if(user.username==req.body.username && user.password==req.body.password){
-            res.cookie('username',req.body.username)
-            res.cookie('password',req.body.password)
+            req.session.username=req.body.username;
+            req.session.password=req.body.password
             return true
         }
         else{
@@ -48,15 +48,16 @@ app.use(function(req,res,next){
             }
         })
         if(c){
-            req.session.username=req.body.username;
-            req.session.password=req.body.password
-            next()
+            
+            next();
         }
         else{
             res.sendFile(__dirname+"/login.html")
         }
     }
-    
+    else{
+        res.sendFile(__dirname+"/login.html")
+    }
 })
 
 
@@ -142,4 +143,4 @@ app.get("/productDetails/:id",function(req,res){
     res.render('productDetails',{product:selectedProduct})
 })
 
-app.listen(6500,function(){console.log('server running on 5500')})
+app.listen(6500,function(){console.log('server running on 6500')})
