@@ -7,11 +7,15 @@ app.set('view engine', 'pug');
 app.set('views','./views');
 var fs = require('fs')
 var cookieParser = require('cookie-parser')
+var session = require('express-session');
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017'
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cookieParser())
+app.use(session({secret: "its my i like sachin batting"}));
+
 
 app.post("/login",function(req,res){
     var c = users.find((user)=>{
@@ -34,9 +38,9 @@ app.post("/login",function(req,res){
 
 app.use(function(req,res,next){
     console.log('middleware function called')
-    if(req.cookies.username){
+    if(req.session.username){
         var c = users.find((user)=>{
-            if(user.username==req.cookies.username && user.password==req.cookies.password){
+            if(user.username==req.session.username && user.password==req.session.password){
                 return true
             }
             else{
@@ -44,6 +48,8 @@ app.use(function(req,res,next){
             }
         })
         if(c){
+            req.session.username=req.body.username;
+            req.session.password=req.body.password
             next()
         }
         else{
@@ -136,4 +142,4 @@ app.get("/productDetails/:id",function(req,res){
     res.render('productDetails',{product:selectedProduct})
 })
 
-app.listen(5500,function(){console.log('server running on 5500')})
+app.listen(6500,function(){console.log('server running on 5500')})
