@@ -50,7 +50,9 @@ app.use(function(req,res,next){
             res.sendFile(__dirname+"/login.html")
         }
     }
-    
+    else{
+        res.sendFile(__dirname+"/login.html")
+    }
 })
 
 
